@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>AE Timer</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        button { font-size: 18px; padding: 10px 20px; margin: 10px; }
+        #time, #ae { font-size: 24px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>AE Arbeitszeit Timer</h1>
+    <button id="start">Start</button>
+    <button id="stop">Stopp</button>
+    <div id="time">Zeit: 00:00:00</div>
+    <div id="ae">AE: 0.0</div>
+
+    <script>
+        let startTime = null;
+        let elapsedTime = 0; // Damit Zeit gespeichert bleibt
+        let timerInterval = null;
+
+        function updateTime() {
+            const now = new Date();
+            const diff = now - startTime + elapsedTime;
+
+            const hours = String(Math.floor(diff / 3600000)).padStart(2, '0');
+            const minutes = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
+            const seconds = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
+
+            document.getElementById('time').textContent = `Zeit: ${hours}:${minutes}:${seconds}`;
+
+            const totalHours = diff / 3600000;
+            const ae = totalHours * 6;
+            document.getElementById('ae').textContent = `AE: ${ae.toFixed(2)}`;
+        }
+
+        document.getElementById('start').onclick = () => {
+            if (!timerInterval) {
+                startTime = new Date();
+                timerInterval = setInterval(updateTime, 1000);
+            }
+        };
+
+        document.getElementById('stop').onclick = () => {
+            if (timerInterval) {
+                elapsedTime += new Date() - startTime; // Zeit speichern
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        };
+    </script>
+</body>
+</html>
